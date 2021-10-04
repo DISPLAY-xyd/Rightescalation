@@ -377,7 +377,7 @@ find / -name ftp
 
 ### 内核信息收集
 
-![image-20211004141057683](C:\Users\DISPLAY\AppData\Roaming\Typora\typora-user-images\image-20211004141057683.png)
+
 
 通过脏牛（CVE-2016-5195）利用易受攻击的机器
 
